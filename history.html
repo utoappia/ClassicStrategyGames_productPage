@@ -4,107 +4,15 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Replay Viewer — Classic Strategy Games</title>
-  <meta name="description" content="Open a shared Classic Strategy Games replay link to watch the match play out, move by move.">
-  <link rel="stylesheet" href="styles.css">
-  <style>
-    .viewer { padding: 64px 0 84px; min-height: 70vh; }
-    .viewer h1 { font-size: 34px; font-weight: 850; text-align: center; }
-    .viewer-sub { text-align: center; color: var(--text-light); font-size: 17px; max-width: 34em; margin: 12px auto 40px; }
-
-    .paste-box {
-      max-width: 640px; margin: 0 auto 32px;
-      background: var(--bg-card); border: 1px solid var(--border);
-      border-radius: 16px; padding: 22px;
-    }
-    .paste-box label { display: block; font-weight: 700; font-size: 14px; margin-bottom: 10px; }
-    .paste-box textarea {
-      width: 100%; min-height: 84px; resize: vertical;
-      border: 1px solid var(--border); border-radius: 10px;
-      background: var(--bg-soft); color: var(--text);
-      padding: 12px 14px; font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
-      font-size: 13px; line-height: 1.5;
-    }
-    .paste-box textarea:focus { outline: none; border-color: var(--primary); }
-    .paste-actions { display: flex; gap: 10px; margin-top: 12px; }
-
-    /* The replay player (reused app ReplayScreen) mounts here. */
-    #replay-root {
-      display: none;
-      max-width: 600px;
-      margin: 0 auto;
-      background: #1e1f2b;       /* matches the in-app board surface */
-      color: #f4f4f6;
-      border: 1px solid var(--border);
-      border-radius: 18px;
-      overflow: hidden;
-      box-shadow: var(--shadow);
-    }
-
-    /* Hide the player's back arrow on the web viewer (header stays balanced). */
-    #replay-root button[aria-label="Back"] { visibility: hidden; }
-    /* Tighten the space above the player once a board is showing. */
-    .viewer:has(#replay-root[style*="display: block"]) { padding-top: 18px; }
-
-    .msg { max-width: 640px; margin: 0 auto; text-align: center; color: var(--text-light); padding: 24px; }
-  </style>
+  <link rel="canonical" href="replay.html">
+  <script>
+    // The replay viewer moved to replay.html — forward, preserving any
+    // #replay=<code> fragment so previously shared links keep working.
+    location.replace('replay.html' + location.search + location.hash);
+  </script>
+  <meta http-equiv="refresh" content="0; url=replay.html">
 </head>
 <body>
-  <!-- Header -->
-  <header class="header">
-    <div class="container">
-      <a class="logo" href="index.html">
-        <span class="logo-mark">♞</span>
-        <span class="logo-text">Classic Strategy Games</span>
-      </a>
-      <nav class="nav">
-        <a href="index.html#games">Games</a>
-        <a href="index.html#features">Features</a>
-        <a href="index.html#pricing">Pricing</a>
-        <a href="history.html">History</a>
-        <a href="index.html#download" class="nav-cta">Download</a>
-      </nav>
-    </div>
-  </header>
-
-  <main class="viewer">
-    <div class="container">
-      <!-- Intro chrome — hidden while a replay is showing, restored by the
-           player's back (←) button. -->
-      <div id="intro">
-        <h1>Replay Viewer</h1>
-        <p class="viewer-sub">Open a replay link shared from the app, or paste a replay code below, to watch the match play out move by move.</p>
-
-        <div class="paste-box">
-          <label for="codeInput">Replay code</label>
-          <textarea id="codeInput" placeholder="Paste a replay code shared from Classic Strategy Games…" spellcheck="false"></textarea>
-          <div class="paste-actions">
-            <button class="btn btn-primary" id="viewBtn">View replay</button>
-            <button class="btn btn-secondary" id="clearBtn">Clear</button>
-          </div>
-        </div>
-
-        <div class="msg" id="emptyMsg">No replay loaded yet. Paste a code above, or open a shared link.</div>
-      </div>
-
-      <!-- Full move-by-move player (mounted by replay/replay.js) -->
-      <div id="replay-root"></div>
-    </div>
-  </main>
-
-  <footer class="footer">
-    <div class="container">
-      <p class="footer-brand">♞ Classic Strategy Games</p>
-      <nav class="footer-nav">
-        <a href="index.html#games">Games</a>
-        <a href="index.html#features">Features</a>
-        <a href="index.html#pricing">Pricing</a>
-        <a href="history.html">History</a>
-      </nav>
-      <p class="footer-copy">© 2026 Classic Strategy Games · Made by utoappia</p>
-    </div>
-  </footer>
-
-  <!-- Reuses the app's ReplayScreen + every game board, bundled from source. -->
-  <script type="module" src="replay/replay.js"></script>
+  <p>Redirecting to the <a href="replay.html">replay viewer</a>…</p>
 </body>
 </html>

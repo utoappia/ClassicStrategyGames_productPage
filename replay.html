@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Replay Viewer — Classic Strategy Games</title>
+  <meta name="description" content="Open a shared Classic Strategy Games replay link to watch the match play out, move by move.">
+  <link rel="stylesheet" href="styles.css">
+  <style>
+    .viewer { padding: 64px 0 84px; min-height: 70vh; }
+    .viewer h1 { font-size: 34px; font-weight: 850; text-align: center; }
+    .viewer-sub { text-align: center; color: var(--text-light); font-size: 17px; max-width: 34em; margin: 12px auto 36px; }
+
+    /* "How to open a replay" card shown when no replay link is present. */
+    .how-card {
+      max-width: 560px; margin: 0 auto;
+      background: var(--bg-card); border: 1px solid var(--border);
+      border-radius: 16px; padding: 28px 30px; box-shadow: var(--shadow);
+    }
+    .how-card h2 { font-size: 19px; font-weight: 800; margin-bottom: 18px; }
+    .how-steps { list-style: none; counter-reset: step; display: flex; flex-direction: column; gap: 16px; }
+    .how-steps li { position: relative; padding-left: 44px; font-size: 15px; color: var(--text); line-height: 1.5; }
+    .how-steps li::before {
+      counter-increment: step; content: counter(step);
+      position: absolute; left: 0; top: -2px;
+      width: 28px; height: 28px; border-radius: 50%;
+      background: var(--primary); color: #fff;
+      font-size: 14px; font-weight: 800;
+      display: flex; align-items: center; justify-content: center;
+    }
+    .how-card .share-chip {
+      display: inline-flex; align-items: center; gap: 6px;
+      background: var(--bg-soft); border: 1px solid var(--border);
+      border-radius: 8px; padding: 2px 8px; font-weight: 600; font-size: 13px;
+      white-space: nowrap;
+    }
+    .how-foot { margin-top: 24px; padding-top: 20px; border-top: 1px solid var(--border); text-align: center; }
+    .how-foot p { color: var(--text-light); font-size: 14px; margin-bottom: 14px; }
+
+    /* The replay player (reused app ReplayScreen) mounts here. */
+    #replay-root {
+      display: none;
+      max-width: 600px;
+      margin: 0 auto;
+      background: #1e1f2b;       /* matches the in-app board surface */
+      color: #f4f4f6;
+      border: 1px solid var(--border);
+      border-radius: 18px;
+      overflow: hidden;
+      box-shadow: var(--shadow);
+    }
+
+    /* Hide the player's back arrow on the web viewer (header stays balanced). */
+    #replay-root button[aria-label="Back"] { visibility: hidden; }
+    /* Tighten the space above the player once a board is showing. */
+    .viewer:has(#replay-root[style*="display: block"]) { padding-top: 18px; }
+  </style>
+</head>
+<body>
+  <!-- Header -->
+  <header class="header">
+    <div class="container">
+      <a class="logo" href="index.html">
+        <span class="logo-mark">♞</span>
+        <span class="logo-text">Classic Strategy Games</span>
+      </a>
+      <nav class="nav">
+        <a href="index.html#games">Games</a>
+        <a href="index.html#features">Features</a>
+        <a href="index.html#pricing">Pricing</a>
+        <a href="replay.html">Replay</a>
+        <a href="index.html#download" class="nav-cta">Download</a>
+      </nav>
+    </div>
+  </header>
+
+  <main class="viewer">
+    <div class="container">
+      <!-- Intro — shown when no replay link is present; hidden while a replay plays. -->
+      <div id="intro">
+        <h1>Replay Viewer</h1>
+        <p class="viewer-sub">Open a replay link shared from the Classic Strategy Games app to watch any match play out, move by move.</p>
+
+        <div class="how-card">
+          <h2>How to share a replay</h2>
+          <ol class="how-steps">
+            <li>In the app, open a finished game from your <b>History</b>.</li>
+            <li>Tap <span class="share-chip">🔗 Share replay link</span> below the board.</li>
+            <li>Send the link to anyone — opening it here plays the match move by move, no app needed.</li>
+          </ol>
+          <div class="how-foot">
+            <p>Don’t have the app yet?</p>
+            <a href="index.html#download" class="btn btn-primary">Get Classic Strategy Games</a>
+          </div>
+        </div>
+      </div>
+
+      <!-- Full move-by-move player (mounted by replay/replay.js) -->
+      <div id="replay-root"></div>
+    </div>
+  </main>
+
+  <footer class="footer">
+    <div class="container">
+      <p class="footer-brand">♞ Classic Strategy Games</p>
+      <nav class="footer-nav">
+        <a href="index.html#games">Games</a>
+        <a href="index.html#features">Features</a>
+        <a href="index.html#pricing">Pricing</a>
+        <a href="replay.html">Replay</a>
+      </nav>
+      <p class="footer-copy">© 2026 Classic Strategy Games · Made by utoappia</p>
+    </div>
+  </footer>
+
+  <!-- Reuses the app's ReplayScreen + every game board, bundled from source. -->
+  <script type="module" src="replay/replay.js"></script>
+</body>
+</html>

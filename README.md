@@ -1,33 +1,49 @@
 # Classic Strategy Games — Product Landing Page
 
 The marketing site and replay viewer for the **Classic Strategy Games** mobile app
-(12 classic board games with on-device AI). Static HTML/CSS/JS — no build step,
-hosted on GitHub Pages.
+(12 classic board games with on-device AI). Hosted on GitHub Pages.
 
 ## Pages
 
 - **index.html** — Landing page: hero, the 12-game grid, features, pricing (Free vs Pro), and download.
-- **history.html** — Replay viewer. Opens a replay link shared from the app
-  (`history.html#replay=<code>`) or a pasted replay code, and shows the match
-  summary (game, players, move count). Decodes the app's replay format in pure
-  JS, including the FNV-1a integrity check.
+- **replay.html** — Replay viewer. Opens a replay link shared from the app
+  (`replay.html#replay=<code>`) and plays the match back **move by move** on the
+  real board, with play/pause/step controls. With no link present it shows how to
+  share a replay from the app (there's no raw-code paste box — nobody hand-copies
+  codes).
+- **history.html** — Redirect stub → `replay.html` (preserves the `#replay=`
+  fragment), so previously shared links keep working.
+- **replay/replay.js** — The viewer's engine: the app's `ReplayScreen` and all 12
+  board components, bundled from source (see below). `replay.html` mounts it.
 - **styles.css** — Shared styling, responsive, automatic dark mode.
+- **.nojekyll** — Serve files as-is (no Jekyll processing).
 
 ## How the replay link works
 
-The mobile app's replay screen has a **Share replay link** button. It builds a URL:
+The mobile app's replay screen has a **🔗 Share replay link** button. It builds:
 
 ```
-https://utoappia.github.io/ClassicStrategyGames_productPage/history.html#replay=<base64url-blob>
+https://utoappia.github.io/ClassicStrategyGames_productPage/replay.html#replay=<base64url-blob>
 ```
 
-The blob is the same compact, checksummed replay format the app stores. `history.html`
-decodes the header (version · game · player count · move count) to render a summary
-card. Full move-by-move playback lives in the app.
+The blob is the same compact, checksummed replay format the app stores. `replay.js`
+decodes it and replays the moves through each game's real rules, rendering the
+actual board — so the web playback matches the app exactly.
 
-> Keep `REPLAY_GAMES` in `history.html` in sync with
-> `packages/core/src/replay/codec.ts` — it's an append-only table, so only ever
-> add to the end.
+## Rebuilding `replay/replay.js`
+
+The bundle is built from the monorepo (it imports `@miniboardgames/ui-react` and
+`@miniboardgames/core` from source):
+
+```
+cd apps/web && npx vite build --config vite.replay.config.ts
+```
+
+It writes straight into `productPage/replay/replay.js`. Entry: `apps/web/src/replayEmbed.tsx`.
+
+> React and ReactDOM must be the **same version** in the bundle (the monorepo root
+> pins this via an `overrides` on `react-dom`); a mismatch throws React error #527
+> at runtime.
 
 ## Deploy (GitHub Pages)
 
@@ -40,4 +56,3 @@ card. Full move-by-move playback lives in the app.
 - Swap the placeholder store links (`#`) for the real App Store / Google Play URLs.
 - Drop real app screenshots into the hero phone mockup (currently a CSS recreation
   of the in-app game list).
-- Optional: full board playback in the web viewer (needs each game's rules in JS).
