@@ -234,6 +234,7 @@
       document.getElementById('statPlayers').textContent = info.playerCount;
       document.getElementById('statMoves').textContent = info.moveCount;
       card.classList.add('show');
+      card.scrollIntoView({ behavior: 'smooth', block: 'center' });
     }
 
     function load(code) {
