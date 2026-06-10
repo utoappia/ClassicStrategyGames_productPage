@@ -146,6 +146,7 @@ h1, h2, h3 { letter-spacing: -0.02em; }
 .hero-buttons {
   display: flex;
   gap: 14px;
+  align-items: center;
   flex-wrap: wrap;
   margin-bottom: 16px;
 }
