@@ -40,6 +40,11 @@
       box-shadow: var(--shadow);
     }
 
+    /* Hide the player's back arrow on the web viewer (header stays balanced). */
+    #replay-root button[aria-label="Back"] { visibility: hidden; }
+    /* Tighten the space above the player once a board is showing. */
+    .viewer:has(#replay-root[style*="display: block"]) { padding-top: 18px; }
+
     .msg { max-width: 640px; margin: 0 auto; text-align: center; color: var(--text-light); padding: 24px; }
   </style>
 </head>
