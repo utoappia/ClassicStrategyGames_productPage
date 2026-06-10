@@ -3,20 +3,27 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Classic Strategy Games - Mobile Board Games</title>
+  <title>Classic Strategy Games — 12 board games with on-device AI</title>
+  <meta name="description" content="Play 12 classic board games — Chess, Go, Reversi, Chinese Checkers and more — against tournament-grade on-device AI. No ads, no subscription. For iPhone and Android.">
+  <meta property="og:title" content="Classic Strategy Games">
+  <meta property="og:description" content="12 classic board games with on-device AI. No ads, no subscription.">
+  <meta property="og:type" content="website">
   <link rel="stylesheet" href="styles.css">
 </head>
 <body>
   <!-- Header / Navigation -->
   <header class="header">
     <div class="container">
-      <div class="logo">
-        <h1>♘ Classic Strategy Games</h1>
-      </div>
+      <a class="logo" href="index.html">
+        <span class="logo-mark">♞</span>
+        <span class="logo-text">Classic Strategy Games</span>
+      </a>
       <nav class="nav">
+        <a href="#games">Games</a>
         <a href="#features">Features</a>
-        <a href="#download">Download</a>
-        <a href="/history.html">History</a>
+        <a href="#pricing">Pricing</a>
+        <a href="history.html">History</a>
+        <a href="#download" class="nav-cta">Download</a>
       </nav>
     </div>
   </header>
@@ -25,19 +32,54 @@
   <section class="hero">
     <div class="container">
       <div class="hero-content">
-        <h2>Master Strategy Games On Your iPhone</h2>
-        <p>Play 13 classic board games with intelligent AI opponents. Tournament-grade difficulty, custom colors, and game history tracking.</p>
+        <p class="eyebrow">12 games · 1 app</p>
+        <h1>Classic board games,<br>seriously smart AI.</h1>
+        <p class="lede">Chess, Go, Reversi, Chinese Checkers and nine more — all in one app, all playable offline against tournament-grade AI. No ads. No subscription.</p>
         <div class="hero-buttons">
-          <a href="https://apps.apple.com/" class="btn btn-primary">Download on App Store</a>
-          <a href="https://play.google.com/" class="btn btn-secondary">Get on Google Play</a>
+          <a href="#download" class="btn btn-primary">Download on the App Store</a>
+          <a href="#download" class="btn btn-secondary">Get it on Google Play</a>
         </div>
+        <p class="hero-note">One-time $3.99 Pro unlock · Free games included</p>
       </div>
-      <div class="hero-image">
-        <div class="phone-mockup">
+
+      <div class="hero-visual">
+        <div class="phone">
+          <div class="phone-notch"></div>
           <div class="phone-screen">
-            <p style="text-align: center; padding: 20px; color: #999;">App Screenshots</p>
+            <div class="app-statusbar"><span>9:41</span><span>▼ ▮▮▮</span></div>
+            <div class="app-title">Games</div>
+            <div class="app-list">
+              <div class="app-row"><span class="app-thumb" style="--g1:#5b8cff;--g2:#3b5bdb;">✕○</span><span class="app-row-text"><b>Tic-Tac-Toe</b><i>2 players</i></span></div>
+              <div class="app-row"><span class="app-thumb" style="--g1:#ff7a7a;--g2:#e03131;">●●●</span><span class="app-row-text"><b>Four in a Row</b><i>2 players</i></span></div>
+              <div class="app-row"><span class="app-thumb" style="--g1:#2bd4a0;--g2:#0ca678;">◐</span><span class="app-row-text"><b>Reversi</b><i>2 players</i></span></div>
+              <div class="app-row"><span class="app-thumb" style="--g1:#c08bff;--g2:#7048e8;">✦</span><span class="app-row-text"><b>Chinese Checkers</b><i>2–6 players</i></span></div>
+              <div class="app-row"><span class="app-thumb" style="--g1:#ffc14d;--g2:#f08c00;">♞</span><span class="app-row-text"><b>Chess</b><i>2 players</i></span></div>
+              <div class="app-row"><span class="app-thumb" style="--g1:#5b8cff;--g2:#1864ab;">⚫</span><span class="app-row-text"><b>Go</b><i>2 players</i></span></div>
+            </div>
           </div>
         </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Games Section -->
+  <section id="games" class="games">
+    <div class="container">
+      <h2>Twelve games. One app.</h2>
+      <p class="section-sub">From a two-minute round of Tic-Tac-Toe to a deep game of Go — every one bundled, no extra downloads.</p>
+      <div class="games-grid">
+        <div class="game-card"><span class="game-glyph" style="--g1:#5b8cff;--g2:#3b5bdb;">✕○</span><h3>Tic-Tac-Toe</h3><p>2 players</p></div>
+        <div class="game-card"><span class="game-glyph" style="--g1:#ff7a7a;--g2:#e03131;">●●●</span><h3>Four in a Row</h3><p>2 players</p></div>
+        <div class="game-card"><span class="game-glyph" style="--g1:#3bc9db;--g2:#1098ad;">●</span><h3>Five in a Row <small>Gomoku</small></h3><p>2 players</p></div>
+        <div class="game-card"><span class="game-glyph" style="--g1:#2bd4a0;--g2:#0ca678;">◐</span><h3>Reversi</h3><p>2 players</p></div>
+        <div class="game-card"><span class="game-glyph" style="--g1:#c08bff;--g2:#7048e8;">✦</span><h3>Chinese Checkers</h3><p>2–6 players</p></div>
+        <div class="game-card"><span class="game-glyph" style="--g1:#ff922b;--g2:#d9480f;">⛂</span><h3>Checkers</h3><p>2 players</p></div>
+        <div class="game-card"><span class="game-glyph" style="--g1:#ffc14d;--g2:#f08c00;">♞</span><h3>Chess</h3><p>2 players</p></div>
+        <div class="game-card"><span class="game-glyph" style="--g1:#fa5252;--g2:#c92a2a;">帥</span><h3>Chinese Chess <small>Xiangqi</small></h3><p>2 players</p></div>
+        <div class="game-card"><span class="game-glyph" style="--g1:#94d82d;--g2:#5c940d;">⊙</span><h3>Nine Men's Morris</h3><p>2 players</p></div>
+        <div class="game-card"><span class="game-glyph" style="--g1:#4dabf7;--g2:#1971c2;">歩</span><h3>Shogi</h3><p>2 players</p></div>
+        <div class="game-card"><span class="game-glyph" style="--g1:#5b8cff;--g2:#1864ab;">⚫</span><h3>Go</h3><p>2 players</p></div>
+        <div class="game-card"><span class="game-glyph" style="--g1:#f783ac;--g2:#c2255c;">♠</span><h3>Big Two</h3><p>2–4 players</p></div>
       </div>
     </div>
   </section>
@@ -45,71 +87,88 @@
   <!-- Features Section -->
   <section id="features" class="features">
     <div class="container">
-      <h2>Why You'll Love It</h2>
+      <h2>Built to be played, not milked.</h2>
+      <p class="section-sub">No ads, no energy timers, no nagging. Just good games and a worthy opponent.</p>
       <div class="features-grid">
         <div class="feature">
-          <div class="feature-icon">🎮</div>
-          <h3>13 Games</h3>
-          <p>Play Tic-Tac-Toe, Go, Reversi, Chess, Chinese Checkers, Checkers, Xiangqi, Nine Men's Morris, Four in a Row, Five in a Row, Big Two, Gomoku, and more.</p>
+          <div class="feature-icon">🧠</div>
+          <h3>Tournament-grade AI</h3>
+          <p>Three difficulty tiers — Easy, Medium and Hard. Go runs a native Monte-Carlo search engine: the exact same C code as our desktop build, right on your phone.</p>
         </div>
         <div class="feature">
-          <div class="feature-icon">🧠</div>
-          <h3>Smart AI</h3>
-          <p>Challenge tournament-grade AI at Easy, Medium, and Hard levels. Uses the same native MCTS engine as our desktop version.</p>
+          <div class="feature-icon">📵</div>
+          <h3>Fully offline</h3>
+          <p>Every game and every AI move runs on-device. No account, no internet, no servers. Play on a plane, on the subway, anywhere.</p>
+        </div>
+        <div class="feature">
+          <div class="feature-icon">👥</div>
+          <h3>Solo or Pass &amp; Play</h3>
+          <p>Take on the computer, or hand the phone back and forth for a local two-player match. Chinese Checkers seats up to six.</p>
+        </div>
+        <div class="feature">
+          <div class="feature-icon">↩️</div>
+          <h3>Confirm before you commit</h3>
+          <p>Tap a move, see the preview, then confirm. A simple guard against the fat-finger mistakes that ruin a good game.</p>
         </div>
         <div class="feature">
           <div class="feature-icon">🎨</div>
-          <h3>Custom Colors</h3>
-          <p>Personalize each player's color with an 8-swatch palette. (Pro feature)</p>
+          <h3>Make it yours</h3>
+          <p>Pick a custom colour for every seat from a curated palette, so each player stands out at a glance. <span class="pro-tag">Pro</span></p>
         </div>
         <div class="feature">
           <div class="feature-icon">📜</div>
-          <h3>Game History</h3>
-          <p>Replay every game you've played. Step through moves, review your strategies, track your wins. (Pro feature)</p>
+          <h3>History &amp; replays</h3>
+          <p>Every finished match is saved. Step back through it move by move to see exactly where it turned. <span class="pro-tag">Pro</span></p>
         </div>
         <div class="feature">
-          <div class="feature-icon">⚙️</div>
-          <h3>Confirmable Moves</h3>
-          <p>Preview your move before committing. Guards against mis-taps across every game.</p>
+          <div class="feature-icon">🌏</div>
+          <h3>Speaks your language</h3>
+          <p>Fully localised in English, Traditional Chinese and Simplified Chinese — following your device automatically.</p>
         </div>
         <div class="feature">
-          <div class="feature-icon">📱</div>
-          <h3>100% Local</h3>
-          <p>All games run on-device. No internet required, no ads, no subscriptions.</p>
+          <div class="feature-icon">📲</div>
+          <h3>iPhone &amp; Android</h3>
+          <p>One app, both platforms, native on each. Built with the same battle-tested game engine across the board.</p>
         </div>
       </div>
     </div>
   </section>
 
   <!-- Pricing Section -->
-  <section class="pricing">
+  <section id="pricing" class="pricing">
     <div class="container">
-      <h2>Unlock Everything</h2>
+      <h2>Simple, honest pricing</h2>
+      <p class="section-sub">Download free. Unlock everything once, forever — no subscription.</p>
       <div class="pricing-cards">
-        <div class="pricing-card free">
+        <div class="pricing-card">
           <h3>Free</h3>
+          <p class="price">$0</p>
+          <p class="note">Everything you need to play</p>
           <ul>
-            <li>✓ All 13 games</li>
-            <li>✓ Easy & Medium AI</li>
-            <li>✓ Default colors</li>
-            <li>✗ Hard difficulty</li>
-            <li>✗ Custom colors</li>
-            <li>✗ Game history</li>
+            <li class="yes">All 12 games</li>
+            <li class="yes">Easy &amp; Medium AI</li>
+            <li class="yes">Pass &amp; Play</li>
+            <li class="yes">Default colours</li>
+            <li class="no">Hard difficulty</li>
+            <li class="no">Custom player colours</li>
+            <li class="no">History &amp; replays</li>
           </ul>
         </div>
         <div class="pricing-card pro">
+          <div class="pro-badge">Best value</div>
           <h3>Pro</h3>
           <p class="price">$3.99</p>
           <p class="note">One-time purchase</p>
           <ul>
-            <li>✓ All 13 games</li>
-            <li>✓ Easy & Medium AI</li>
-            <li>✓ Default colors</li>
-            <li>✓ Hard difficulty</li>
-            <li>✓ Custom colors</li>
-            <li>✓ Game history</li>
+            <li class="yes">All 12 games</li>
+            <li class="yes">Easy &amp; Medium AI</li>
+            <li class="yes">Pass &amp; Play</li>
+            <li class="yes">Default colours</li>
+            <li class="yes"><b>Hard difficulty</b></li>
+            <li class="yes"><b>Custom player colours</b></li>
+            <li class="yes"><b>History &amp; replays</b></li>
           </ul>
-          <p style="text-align: center; margin-top: 16px; font-size: 14px; color: #999;">No ads. No subscription.</p>
+          <p class="fineprint">No ads · No subscription · One-time unlock</p>
         </div>
       </div>
     </div>
@@ -118,26 +177,33 @@
   <!-- Download Section -->
   <section id="download" class="download">
     <div class="container">
-      <h2>Download Now</h2>
-      <p>Available on iPhone and Android. Play locally, anytime, anywhere.</p>
+      <h2>Ready to play?</h2>
+      <p class="section-sub">Download free on iPhone and Android. Unlock Pro whenever you like.</p>
       <div class="download-buttons">
-        <a href="https://apps.apple.com/" class="btn btn-primary btn-large">
-          <span style="font-size: 24px;">📱</span>
-          Download on App Store
+        <a href="#" class="store-badge">
+          <span class="store-icon"></span>
+          <span class="store-text"><small>Download on the</small><b>App Store</b></span>
         </a>
-        <a href="https://play.google.com/" class="btn btn-secondary btn-large">
-          <span style="font-size: 24px;">🤖</span>
-          Get on Google Play
+        <a href="#" class="store-badge">
+          <span class="store-icon">▶</span>
+          <span class="store-text"><small>Get it on</small><b>Google Play</b></span>
         </a>
       </div>
+      <p class="hero-note">Store links coming soon.</p>
     </div>
   </section>
 
   <!-- Footer -->
   <footer class="footer">
     <div class="container">
-      <p>&copy; 2026 Classic Strategy Games. All rights reserved.</p>
-      <p><a href="/history.html">View Game History</a> • <a href="mailto:support@example.com">Contact</a></p>
+      <p class="footer-brand">♞ Classic Strategy Games</p>
+      <nav class="footer-nav">
+        <a href="#games">Games</a>
+        <a href="#features">Features</a>
+        <a href="#pricing">Pricing</a>
+        <a href="history.html">History</a>
+      </nav>
+      <p class="footer-copy">© 2026 Classic Strategy Games · Made by utoappia</p>
     </div>
   </footer>
 </body>

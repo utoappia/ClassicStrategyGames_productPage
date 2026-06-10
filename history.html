@@ -3,412 +3,271 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Game History - Classic Strategy Games</title>
+  <title>Replay Viewer — Classic Strategy Games</title>
+  <meta name="description" content="Open a shared Classic Strategy Games replay link to see the match details.">
   <link rel="stylesheet" href="styles.css">
   <style>
-    .history-container {
-      max-width: 800px;
-      margin: 0 auto;
-      padding: 40px 20px;
-    }
+    .viewer { padding: 64px 0 84px; min-height: 70vh; }
+    .viewer h1 { font-size: 34px; font-weight: 850; text-align: center; }
+    .viewer-sub { text-align: center; color: var(--text-light); font-size: 17px; max-width: 34em; margin: 12px auto 40px; }
 
-    .history-header {
-      margin-bottom: 40px;
+    .paste-box {
+      max-width: 640px; margin: 0 auto 32px;
+      background: var(--bg-card); border: 1px solid var(--border);
+      border-radius: 16px; padding: 22px;
     }
-
-    .history-header h2 {
-      font-size: 32px;
-      font-weight: 800;
-      margin-bottom: 8px;
+    .paste-box label { display: block; font-weight: 700; font-size: 14px; margin-bottom: 10px; }
+    .paste-box textarea {
+      width: 100%; min-height: 88px; resize: vertical;
+      border: 1px solid var(--border); border-radius: 10px;
+      background: var(--bg-soft); color: var(--text);
+      padding: 12px 14px; font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
+      font-size: 13px; line-height: 1.5;
     }
+    .paste-box textarea:focus { outline: none; border-color: var(--primary); }
+    .paste-actions { display: flex; gap: 10px; margin-top: 12px; }
 
-    .history-header p {
-      color: var(--text-light);
-      font-size: 16px;
-    }
-
-    .upload-section {
-      background-color: var(--bg-light);
-      border: 2px dashed var(--border);
-      border-radius: 8px;
-      padding: 32px;
-      text-align: center;
-      margin-bottom: 40px;
-      cursor: pointer;
-      transition: all 0.2s;
-    }
-
-    .upload-section:hover {
-      border-color: var(--primary);
-      background-color: rgba(59, 130, 246, 0.05);
-    }
-
-    .upload-section input {
+    .replay-card {
+      max-width: 640px; margin: 0 auto;
+      background: var(--bg-card); border: 1px solid var(--border);
+      border-radius: 18px; overflow: hidden; box-shadow: var(--shadow);
       display: none;
     }
-
-    .upload-section p {
-      margin: 12px 0;
-      color: var(--text-light);
-      font-size: 14px;
+    .replay-card.show { display: block; }
+    .replay-banner {
+      display: flex; align-items: center; gap: 18px;
+      padding: 28px; color: #fff;
+      background: linear-gradient(135deg, var(--g1, #3b6dff), var(--g2, #7048e8));
     }
-
-    .history-list {
-      display: flex;
-      flex-direction: column;
-      gap: 16px;
+    .replay-banner .glyph {
+      width: 64px; height: 64px; flex-shrink: 0;
+      border-radius: 16px; display: flex; align-items: center; justify-content: center;
+      font-size: 26px; background: rgba(255,255,255,0.18);
     }
+    .replay-banner h2 { font-size: 24px; font-weight: 800; }
+    .replay-banner h2 small { display:block; font-size: 13px; font-weight:600; opacity:0.85; margin-top:2px; }
+    .replay-stats { display: flex; flex-wrap: wrap; }
+    .replay-stat { flex: 1 1 33%; min-width: 120px; padding: 22px; text-align: center; border-top: 1px solid var(--border); border-right: 1px solid var(--border); }
+    .replay-stat:last-child { border-right: none; }
+    .replay-stat .num { font-size: 28px; font-weight: 850; }
+    .replay-stat .lbl { font-size: 13px; color: var(--text-light); margin-top: 2px; }
+    .replay-foot { padding: 22px 28px; border-top: 1px solid var(--border); text-align: center; }
+    .replay-foot p { color: var(--text-light); font-size: 14px; margin-bottom: 14px; }
 
-    .history-item {
-      padding: 20px;
-      background-color: var(--bg-light);
-      border: 1px solid var(--border);
-      border-radius: 8px;
-      cursor: pointer;
-      transition: all 0.2s;
-    }
-
-    .history-item:hover {
-      background-color: var(--bg);
-      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
-      border-color: var(--primary);
-    }
-
-    .history-item-header {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      margin-bottom: 8px;
-    }
-
-    .history-item-title {
-      font-weight: 600;
-      font-size: 16px;
-    }
-
-    .history-item-result {
-      font-size: 14px;
-      font-weight: 500;
-    }
-
-    .history-item-result.win {
-      color: #10b981;
-    }
-
-    .history-item-result.draw {
-      color: var(--text-light);
-    }
-
-    .history-item-meta {
-      display: flex;
-      gap: 16px;
-      font-size: 13px;
-      color: var(--text-light);
-    }
-
-    .empty-state {
-      text-align: center;
-      padding: 60px 20px;
-      color: var(--text-light);
-    }
-
-    .empty-state h3 {
-      font-size: 20px;
-      font-weight: 600;
-      margin-bottom: 8px;
-      color: var(--text);
-    }
-
-    .replay-viewer {
-      display: none;
-      margin-top: 40px;
-      padding: 32px;
-      background-color: var(--bg-light);
-      border-radius: 12px;
-    }
-
-    .replay-viewer.active {
-      display: block;
-    }
-
-    .replay-viewer-header {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      margin-bottom: 24px;
-      border-bottom: 1px solid var(--border);
-      padding-bottom: 16px;
-    }
-
-    .replay-viewer h3 {
-      font-size: 20px;
-      font-weight: 700;
-    }
-
-    .replay-close {
-      background: none;
-      border: none;
-      font-size: 24px;
-      cursor: pointer;
-      color: var(--text-light);
-    }
-
-    .replay-board {
-      background-color: var(--bg);
-      border: 1px solid var(--border);
-      border-radius: 8px;
-      padding: 24px;
-      margin-bottom: 24px;
-      text-align: center;
-      min-height: 300px;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      color: var(--text-light);
-    }
-
-    .replay-controls {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      gap: 16px;
-    }
-
-    .replay-controls button {
-      padding: 8px 16px;
-      background-color: var(--primary);
-      color: white;
-      border: none;
-      border-radius: 6px;
-      cursor: pointer;
-      font-weight: 600;
-      transition: background-color 0.2s;
-    }
-
-    .replay-controls button:hover {
-      background-color: var(--primary-dark);
-    }
-
-    .replay-controls button:disabled {
-      opacity: 0.4;
-      cursor: not-allowed;
-    }
-
-    .move-counter {
-      text-align: center;
-      font-size: 14px;
-      color: var(--text-light);
-      min-width: 100px;
-    }
+    .msg { max-width: 640px; margin: 0 auto; text-align: center; color: var(--text-light); padding: 24px; }
+    .msg.error { color: #e03131; font-weight: 600; }
   </style>
 </head>
 <body>
-  <!-- Header / Navigation -->
+  <!-- Header -->
   <header class="header">
     <div class="container">
-      <div class="logo">
-        <h1>♘ Classic Strategy Games</h1>
-      </div>
+      <a class="logo" href="index.html">
+        <span class="logo-mark">♞</span>
+        <span class="logo-text">Classic Strategy Games</span>
+      </a>
       <nav class="nav">
-        <a href="/">Home</a>
-        <a href="/#features">Features</a>
-        <a href="/#download">Download</a>
-        <a href="/history.html">History</a>
+        <a href="index.html#games">Games</a>
+        <a href="index.html#features">Features</a>
+        <a href="index.html#pricing">Pricing</a>
+        <a href="history.html">History</a>
+        <a href="index.html#download" class="nav-cta">Download</a>
       </nav>
     </div>
   </header>
 
-  <!-- Main Content -->
-  <div class="history-container">
-    <div class="history-header">
-      <h2>Game History Viewer</h2>
-      <p>Export your game history from the app and view your replays here.</p>
-    </div>
+  <main class="viewer">
+    <div class="container">
+      <h1>Replay Viewer</h1>
+      <p class="viewer-sub">Open a replay link shared from the app, or paste a replay code below to see the match.</p>
 
-    <!-- Upload Section -->
-    <div class="upload-section" id="uploadZone">
-      <div>
-        <p style="font-size: 32px; margin: 0;">📂</p>
-        <p><strong>Click or drag to upload history file</strong></p>
-        <p>Exported from Classic Strategy Games app</p>
-        <input type="file" id="fileInput" accept=".json">
-      </div>
-    </div>
-
-    <!-- History List -->
-    <div id="historyList" class="history-list" style="display: none;">
-      <!-- Populated by JavaScript -->
-    </div>
-
-    <!-- Empty State -->
-    <div id="emptyState" class="empty-state">
-      <h3>No history loaded</h3>
-      <p>Upload a history file exported from your Classic Strategy Games app to view your games and replays.</p>
-    </div>
-
-    <!-- Replay Viewer -->
-    <div id="replayViewer" class="replay-viewer">
-      <div class="replay-viewer-header">
-        <h3 id="replayTitle">Game Replay</h3>
-        <button class="replay-close" id="closeReplay">×</button>
-      </div>
-      <div class="replay-board" id="replayBoard">
-        Board visualization coming soon
-      </div>
-      <div class="replay-controls">
-        <button id="prevMove">← Previous</button>
-        <div class="move-counter">
-          <span id="moveCounter">Move 0 / 0</span>
+      <div class="paste-box">
+        <label for="codeInput">Replay code</label>
+        <textarea id="codeInput" placeholder="Paste a replay code shared from Classic Strategy Games…" spellcheck="false"></textarea>
+        <div class="paste-actions">
+          <button class="btn btn-primary" id="viewBtn">View replay</button>
+          <button class="btn btn-secondary" id="clearBtn">Clear</button>
         </div>
-        <button id="nextMove">Next →</button>
       </div>
+
+      <div class="replay-card" id="card">
+        <div class="replay-banner" id="banner">
+          <div class="glyph" id="glyph">♞</div>
+          <div>
+            <h2 id="gameName">Game<small id="gameAlt"></small></h2>
+          </div>
+        </div>
+        <div class="replay-stats">
+          <div class="replay-stat"><div class="num" id="statPlayers">2</div><div class="lbl">Players</div></div>
+          <div class="replay-stat"><div class="num" id="statMoves">0</div><div class="lbl">Moves played</div></div>
+          <div class="replay-stat"><div class="num">v1</div><div class="lbl">Replay format</div></div>
+        </div>
+        <div class="replay-foot">
+          <p>This is a shared match summary. Open the game in the Classic Strategy Games app to step through it move by move.</p>
+          <a href="index.html#download" class="btn btn-primary">Get the app</a>
+        </div>
+      </div>
+
+      <div class="msg error" id="errorMsg" style="display:none;"></div>
+      <div class="msg" id="emptyMsg">No replay loaded yet. Paste a code above, or open a shared link.</div>
     </div>
-  </div>
+  </main>
+
+  <footer class="footer">
+    <div class="container">
+      <p class="footer-brand">♞ Classic Strategy Games</p>
+      <nav class="footer-nav">
+        <a href="index.html#games">Games</a>
+        <a href="index.html#features">Features</a>
+        <a href="index.html#pricing">Pricing</a>
+        <a href="history.html">History</a>
+      </nav>
+      <p class="footer-copy">© 2026 Classic Strategy Games · Made by utoappia</p>
+    </div>
+  </footer>
 
   <script>
-    // File upload handling
-    const uploadZone = document.getElementById('uploadZone');
-    const fileInput = document.getElementById('fileInput');
-    const historyList = document.getElementById('historyList');
-    const emptyState = document.getElementById('emptyState');
-    const replayViewer = document.getElementById('replayViewer');
-    const closeReplay = document.getElementById('closeReplay');
+    // ---- Replay codec (header decode, ported from the app) ----
+    // Append-only game table: a game's index is its 2-byte code in the blob.
+    const REPLAY_GAMES = ['tic-tac-toe','connect-four','gomoku','reversi','chinese-checkers',
+      'checkers','chess','xiangqi','nine-mens-morris','shogi','go','big-two'];
+    const GAME_NAMES = {
+      'tic-tac-toe': ['Tic-Tac-Toe', ''],
+      'connect-four': ['Four in a Row', ''],
+      'gomoku': ['Five in a Row', 'Gomoku'],
+      'reversi': ['Reversi', ''],
+      'chinese-checkers': ['Chinese Checkers', ''],
+      'checkers': ['Checkers', ''],
+      'chess': ['Chess', ''],
+      'xiangqi': ['Chinese Chess', 'Xiangqi'],
+      'nine-mens-morris': ["Nine Men's Morris", ''],
+      'shogi': ['Shogi', ''],
+      'go': ['Go', ''],
+      'big-two': ['Big Two', ''],
+    };
+    const GAME_GLYPH = {
+      'tic-tac-toe': ['✕○', '#5b8cff', '#3b5bdb'],
+      'connect-four': ['●●●', '#ff7a7a', '#e03131'],
+      'gomoku': ['●', '#3bc9db', '#1098ad'],
+      'reversi': ['◐', '#2bd4a0', '#0ca678'],
+      'chinese-checkers': ['✦', '#c08bff', '#7048e8'],
+      'checkers': ['⛂', '#ff922b', '#d9480f'],
+      'chess': ['♞', '#ffc14d', '#f08c00'],
+      'xiangqi': ['帥', '#fa5252', '#c92a2a'],
+      'nine-mens-morris': ['⊙', '#94d82d', '#5c940d'],
+      'shogi': ['歩', '#4dabf7', '#1971c2'],
+      'go': ['⚫', '#5b8cff', '#1864ab'],
+      'big-two': ['♠', '#f783ac', '#c2255c'],
+    };
 
-    // Prevent default drag behaviors
-    ['dragenter', 'dragover', 'dragleave', 'drop'].forEach(eventName => {
-      uploadZone.addEventListener(eventName, preventDefaults, false);
-      document.body.addEventListener(eventName, preventDefaults, false);
-    });
-
-    function preventDefaults(e) {
-      e.preventDefault();
-      e.stopPropagation();
-    }
-
-    // Highlight drop zone when item is dragged over it
-    ['dragenter', 'dragover'].forEach(eventName => {
-      uploadZone.addEventListener(eventName, highlight, false);
-    });
-    ['dragleave', 'drop'].forEach(eventName => {
-      uploadZone.addEventListener(eventName, unhighlight, false);
-    });
-
-    function highlight(e) {
-      uploadZone.style.borderColor = 'var(--primary)';
-      uploadZone.style.backgroundColor = 'rgba(59, 130, 246, 0.05)';
-    }
-
-    function unhighlight(e) {
-      uploadZone.style.borderColor = 'var(--border)';
-      uploadZone.style.backgroundColor = 'var(--bg-light)';
-    }
-
-    // Handle drop
-    uploadZone.addEventListener('drop', handleDrop, false);
-    uploadZone.addEventListener('click', () => fileInput.click());
-    fileInput.addEventListener('change', (e) => {
-      const files = e.target.files;
-      if (files.length > 0) {
-        handleFile(files[0]);
+    // URL-safe base64 → bytes (bit accumulator; tolerant of missing padding).
+    const B64 = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789-_';
+    const LOOKUP = new Int16Array(128).fill(-1);
+    for (let i = 0; i < B64.length; i++) LOOKUP[B64.charCodeAt(i)] = i;
+    function fromBase64Url(text) {
+      const out = [];
+      let acc = 0, bits = 0;
+      for (let i = 0; i < text.length; i++) {
+        const c = text.charCodeAt(i);
+        const v = c < 128 ? LOOKUP[c] : -1;
+        if (v < 0) continue;
+        acc = (acc << 6) | v;
+        bits += 6;
+        if (bits >= 8) { bits -= 8; out.push((acc >> bits) & 0xff); }
       }
-    });
-
-    function handleDrop(e) {
-      const dt = e.dataTransfer;
-      const files = dt.files;
-      if (files.length > 0) {
-        handleFile(files[0]);
-      }
+      return Uint8Array.from(out);
     }
 
-    function handleFile(file) {
-      const reader = new FileReader();
-      reader.onload = (e) => {
-        try {
-          const history = JSON.parse(e.target.result);
-          displayHistory(history);
-        } catch (error) {
-          alert('Error parsing file: ' + error.message);
-        }
-      };
-      reader.readAsText(file);
+    function readUint(bytes, at, width) {
+      let v = 0;
+      for (let i = 0; i < width; i++) v = v * 256 + (bytes[at + i] || 0);
+      return v;
     }
 
-    function displayHistory(history) {
-      if (!history || history.length === 0) {
-        emptyState.style.display = 'block';
-        historyList.style.display = 'none';
+    // FNV-1a 32-bit, matching the app's integrity check.
+    function checksum(bytes, len) {
+      let h = 0x811c9dc5;
+      for (let i = 0; i < len; i++) { h ^= bytes[i] || 0; h = Math.imul(h, 0x01000193); }
+      return h >>> 0;
+    }
+
+    function decodeReplay(code) {
+      const bytes = fromBase64Url(code.trim());
+      if (bytes.length <= 18) throw new Error('That code is too short to be a replay.');
+      // Verify trailing 4-byte checksum.
+      const n = bytes.length - 4;
+      const stored = (((bytes[n] << 24) | (bytes[n + 1] << 16) | (bytes[n + 2] << 8) | bytes[n + 3]) >>> 0);
+      if (checksum(bytes, n) !== stored) throw new Error('This replay link is corrupted or incomplete.');
+      const version = readUint(bytes, 0, 2);
+      if (version !== 1) throw new Error('Unsupported replay version ' + version + '.');
+      const gameId = REPLAY_GAMES[readUint(bytes, 2, 2)];
+      if (!gameId) throw new Error('This replay names a game we don’t recognise.');
+      const playerCount = readUint(bytes, 4, 2);
+      const moveCount = readUint(bytes, 6, 4);
+      return { gameId, playerCount, moveCount };
+    }
+
+    // ---- UI ----
+    const card = document.getElementById('card');
+    const errorMsg = document.getElementById('errorMsg');
+    const emptyMsg = document.getElementById('emptyMsg');
+    const codeInput = document.getElementById('codeInput');
+
+    function showError(text) {
+      card.classList.remove('show');
+      emptyMsg.style.display = 'none';
+      errorMsg.textContent = text;
+      errorMsg.style.display = 'block';
+    }
+
+    function render(info) {
+      errorMsg.style.display = 'none';
+      emptyMsg.style.display = 'none';
+      const [name, alt] = GAME_NAMES[info.gameId] || [info.gameId, ''];
+      const [glyph, g1, g2] = GAME_GLYPH[info.gameId] || ['♞', '#3b6dff', '#7048e8'];
+      document.getElementById('gameName').childNodes[0].nodeValue = name;
+      document.getElementById('gameAlt').textContent = alt;
+      document.getElementById('glyph').textContent = glyph;
+      const banner = document.getElementById('banner');
+      banner.style.setProperty('--g1', g1);
+      banner.style.setProperty('--g2', g2);
+      document.getElementById('statPlayers').textContent = info.playerCount;
+      document.getElementById('statMoves').textContent = info.moveCount;
+      card.classList.add('show');
+    }
+
+    function load(code) {
+      if (!code || !code.trim()) {
+        card.classList.remove('show');
+        errorMsg.style.display = 'none';
+        emptyMsg.style.display = 'block';
         return;
       }
-
-      emptyState.style.display = 'none';
-      historyList.style.display = 'flex';
-      historyList.innerHTML = '';
-
-      history.forEach((entry, index) => {
-        const item = document.createElement('div');
-        item.className = 'history-item';
-
-        const date = new Date(entry.finishedAt);
-        const dateStr = date.toLocaleDateString(undefined, {
-          year: 'numeric',
-          month: 'short',
-          day: 'numeric'
-        });
-        const timeStr = date.toLocaleTimeString(undefined, {
-          hour: '2-digit',
-          minute: '2-digit'
-        });
-
-        const gameNames = {
-          'tictactoe': 'Tic-Tac-Toe',
-          'four-in-a-row': 'Four in a Row',
-          'five-in-a-row': 'Five in a Row / Gomoku',
-          'reversi': 'Reversi',
-          'chinese-checkers': 'Chinese Checkers',
-          'checkers': 'Checkers',
-          'chess': 'Chess',
-          'xiangqi': 'Xiangqi',
-          'nine-mens-morris': "Nine Men's Morris",
-          'big-two': 'Big Two',
-          'go': 'Go'
-        };
-
-        const gameName = gameNames[entry.gameId] || entry.gameId;
-        const result = entry.result.state === 'draw'
-          ? 'Draw'
-          : `Player ${entry.result.winner + 1} won`;
-        const resultClass = entry.result.state === 'draw' ? 'draw' : 'win';
-
-        item.innerHTML = `
-          <div class="history-item-header">
-            <div class="history-item-title">${gameName}</div>
-            <div class="history-item-result ${resultClass}">${result}</div>
-          </div>
-          <div class="history-item-meta">
-            <span>📅 ${dateStr}</span>
-            <span>🕐 ${timeStr}</span>
-          </div>
-        `;
-
-        item.addEventListener('click', () => {
-          openReplay(entry, gameName);
-        });
-
-        historyList.appendChild(item);
-      });
+      try {
+        render(decodeReplay(code));
+      } catch (e) {
+        showError(e.message || 'Could not read that replay.');
+      }
     }
 
-    function openReplay(entry, gameName) {
-      document.getElementById('replayTitle').textContent = `${gameName} - Replay`;
-      document.getElementById('replayBoard').textContent = 'Replay visualization coming soon\n\nYou can view the full replay in the mobile app.';
-      replayViewer.classList.add('active');
-      window.scrollTo(0, replayViewer.offsetTop - 100);
-    }
-
-    closeReplay.addEventListener('click', () => {
-      replayViewer.classList.remove('active');
+    document.getElementById('viewBtn').addEventListener('click', () => load(codeInput.value));
+    document.getElementById('clearBtn').addEventListener('click', () => {
+      codeInput.value = '';
+      load('');
+      if (location.hash) history.replaceState(null, '', location.pathname);
     });
+
+    // Auto-load from a shared link: #replay=<code>
+    function readHash() {
+      const m = location.hash.match(/replay=([^&]+)/);
+      if (m) {
+        const code = decodeURIComponent(m[1]);
+        codeInput.value = code;
+        load(code);
+      }
+    }
+    window.addEventListener('hashchange', readHash);
+    readHash();
   </script>
 </body>
 </html>
