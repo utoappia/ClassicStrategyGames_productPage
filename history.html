@@ -1,0 +1,414 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Game History - Classic Strategy Games</title>
+  <link rel="stylesheet" href="styles.css">
+  <style>
+    .history-container {
+      max-width: 800px;
+      margin: 0 auto;
+      padding: 40px 20px;
+    }
+
+    .history-header {
+      margin-bottom: 40px;
+    }
+
+    .history-header h2 {
+      font-size: 32px;
+      font-weight: 800;
+      margin-bottom: 8px;
+    }
+
+    .history-header p {
+      color: var(--text-light);
+      font-size: 16px;
+    }
+
+    .upload-section {
+      background-color: var(--bg-light);
+      border: 2px dashed var(--border);
+      border-radius: 8px;
+      padding: 32px;
+      text-align: center;
+      margin-bottom: 40px;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+
+    .upload-section:hover {
+      border-color: var(--primary);
+      background-color: rgba(59, 130, 246, 0.05);
+    }
+
+    .upload-section input {
+      display: none;
+    }
+
+    .upload-section p {
+      margin: 12px 0;
+      color: var(--text-light);
+      font-size: 14px;
+    }
+
+    .history-list {
+      display: flex;
+      flex-direction: column;
+      gap: 16px;
+    }
+
+    .history-item {
+      padding: 20px;
+      background-color: var(--bg-light);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+
+    .history-item:hover {
+      background-color: var(--bg);
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+      border-color: var(--primary);
+    }
+
+    .history-item-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 8px;
+    }
+
+    .history-item-title {
+      font-weight: 600;
+      font-size: 16px;
+    }
+
+    .history-item-result {
+      font-size: 14px;
+      font-weight: 500;
+    }
+
+    .history-item-result.win {
+      color: #10b981;
+    }
+
+    .history-item-result.draw {
+      color: var(--text-light);
+    }
+
+    .history-item-meta {
+      display: flex;
+      gap: 16px;
+      font-size: 13px;
+      color: var(--text-light);
+    }
+
+    .empty-state {
+      text-align: center;
+      padding: 60px 20px;
+      color: var(--text-light);
+    }
+
+    .empty-state h3 {
+      font-size: 20px;
+      font-weight: 600;
+      margin-bottom: 8px;
+      color: var(--text);
+    }
+
+    .replay-viewer {
+      display: none;
+      margin-top: 40px;
+      padding: 32px;
+      background-color: var(--bg-light);
+      border-radius: 12px;
+    }
+
+    .replay-viewer.active {
+      display: block;
+    }
+
+    .replay-viewer-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 24px;
+      border-bottom: 1px solid var(--border);
+      padding-bottom: 16px;
+    }
+
+    .replay-viewer h3 {
+      font-size: 20px;
+      font-weight: 700;
+    }
+
+    .replay-close {
+      background: none;
+      border: none;
+      font-size: 24px;
+      cursor: pointer;
+      color: var(--text-light);
+    }
+
+    .replay-board {
+      background-color: var(--bg);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      padding: 24px;
+      margin-bottom: 24px;
+      text-align: center;
+      min-height: 300px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: var(--text-light);
+    }
+
+    .replay-controls {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 16px;
+    }
+
+    .replay-controls button {
+      padding: 8px 16px;
+      background-color: var(--primary);
+      color: white;
+      border: none;
+      border-radius: 6px;
+      cursor: pointer;
+      font-weight: 600;
+      transition: background-color 0.2s;
+    }
+
+    .replay-controls button:hover {
+      background-color: var(--primary-dark);
+    }
+
+    .replay-controls button:disabled {
+      opacity: 0.4;
+      cursor: not-allowed;
+    }
+
+    .move-counter {
+      text-align: center;
+      font-size: 14px;
+      color: var(--text-light);
+      min-width: 100px;
+    }
+  </style>
+</head>
+<body>
+  <!-- Header / Navigation -->
+  <header class="header">
+    <div class="container">
+      <div class="logo">
+        <h1>♘ Classic Strategy Games</h1>
+      </div>
+      <nav class="nav">
+        <a href="/">Home</a>
+        <a href="/#features">Features</a>
+        <a href="/#download">Download</a>
+        <a href="/history.html">History</a>
+      </nav>
+    </div>
+  </header>
+
+  <!-- Main Content -->
+  <div class="history-container">
+    <div class="history-header">
+      <h2>Game History Viewer</h2>
+      <p>Export your game history from the app and view your replays here.</p>
+    </div>
+
+    <!-- Upload Section -->
+    <div class="upload-section" id="uploadZone">
+      <div>
+        <p style="font-size: 32px; margin: 0;">📂</p>
+        <p><strong>Click or drag to upload history file</strong></p>
+        <p>Exported from Classic Strategy Games app</p>
+        <input type="file" id="fileInput" accept=".json">
+      </div>
+    </div>
+
+    <!-- History List -->
+    <div id="historyList" class="history-list" style="display: none;">
+      <!-- Populated by JavaScript -->
+    </div>
+
+    <!-- Empty State -->
+    <div id="emptyState" class="empty-state">
+      <h3>No history loaded</h3>
+      <p>Upload a history file exported from your Classic Strategy Games app to view your games and replays.</p>
+    </div>
+
+    <!-- Replay Viewer -->
+    <div id="replayViewer" class="replay-viewer">
+      <div class="replay-viewer-header">
+        <h3 id="replayTitle">Game Replay</h3>
+        <button class="replay-close" id="closeReplay">×</button>
+      </div>
+      <div class="replay-board" id="replayBoard">
+        Board visualization coming soon
+      </div>
+      <div class="replay-controls">
+        <button id="prevMove">← Previous</button>
+        <div class="move-counter">
+          <span id="moveCounter">Move 0 / 0</span>
+        </div>
+        <button id="nextMove">Next →</button>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    // File upload handling
+    const uploadZone = document.getElementById('uploadZone');
+    const fileInput = document.getElementById('fileInput');
+    const historyList = document.getElementById('historyList');
+    const emptyState = document.getElementById('emptyState');
+    const replayViewer = document.getElementById('replayViewer');
+    const closeReplay = document.getElementById('closeReplay');
+
+    // Prevent default drag behaviors
+    ['dragenter', 'dragover', 'dragleave', 'drop'].forEach(eventName => {
+      uploadZone.addEventListener(eventName, preventDefaults, false);
+      document.body.addEventListener(eventName, preventDefaults, false);
+    });
+
+    function preventDefaults(e) {
+      e.preventDefault();
+      e.stopPropagation();
+    }
+
+    // Highlight drop zone when item is dragged over it
+    ['dragenter', 'dragover'].forEach(eventName => {
+      uploadZone.addEventListener(eventName, highlight, false);
+    });
+    ['dragleave', 'drop'].forEach(eventName => {
+      uploadZone.addEventListener(eventName, unhighlight, false);
+    });
+
+    function highlight(e) {
+      uploadZone.style.borderColor = 'var(--primary)';
+      uploadZone.style.backgroundColor = 'rgba(59, 130, 246, 0.05)';
+    }
+
+    function unhighlight(e) {
+      uploadZone.style.borderColor = 'var(--border)';
+      uploadZone.style.backgroundColor = 'var(--bg-light)';
+    }
+
+    // Handle drop
+    uploadZone.addEventListener('drop', handleDrop, false);
+    uploadZone.addEventListener('click', () => fileInput.click());
+    fileInput.addEventListener('change', (e) => {
+      const files = e.target.files;
+      if (files.length > 0) {
+        handleFile(files[0]);
+      }
+    });
+
+    function handleDrop(e) {
+      const dt = e.dataTransfer;
+      const files = dt.files;
+      if (files.length > 0) {
+        handleFile(files[0]);
+      }
+    }
+
+    function handleFile(file) {
+      const reader = new FileReader();
+      reader.onload = (e) => {
+        try {
+          const history = JSON.parse(e.target.result);
+          displayHistory(history);
+        } catch (error) {
+          alert('Error parsing file: ' + error.message);
+        }
+      };
+      reader.readAsText(file);
+    }
+
+    function displayHistory(history) {
+      if (!history || history.length === 0) {
+        emptyState.style.display = 'block';
+        historyList.style.display = 'none';
+        return;
+      }
+
+      emptyState.style.display = 'none';
+      historyList.style.display = 'flex';
+      historyList.innerHTML = '';
+
+      history.forEach((entry, index) => {
+        const item = document.createElement('div');
+        item.className = 'history-item';
+
+        const date = new Date(entry.finishedAt);
+        const dateStr = date.toLocaleDateString(undefined, {
+          year: 'numeric',
+          month: 'short',
+          day: 'numeric'
+        });
+        const timeStr = date.toLocaleTimeString(undefined, {
+          hour: '2-digit',
+          minute: '2-digit'
+        });
+
+        const gameNames = {
+          'tictactoe': 'Tic-Tac-Toe',
+          'four-in-a-row': 'Four in a Row',
+          'five-in-a-row': 'Five in a Row / Gomoku',
+          'reversi': 'Reversi',
+          'chinese-checkers': 'Chinese Checkers',
+          'checkers': 'Checkers',
+          'chess': 'Chess',
+          'xiangqi': 'Xiangqi',
+          'nine-mens-morris': "Nine Men's Morris",
+          'big-two': 'Big Two',
+          'go': 'Go'
+        };
+
+        const gameName = gameNames[entry.gameId] || entry.gameId;
+        const result = entry.result.state === 'draw'
+          ? 'Draw'
+          : `Player ${entry.result.winner + 1} won`;
+        const resultClass = entry.result.state === 'draw' ? 'draw' : 'win';
+
+        item.innerHTML = `
+          <div class="history-item-header">
+            <div class="history-item-title">${gameName}</div>
+            <div class="history-item-result ${resultClass}">${result}</div>
+          </div>
+          <div class="history-item-meta">
+            <span>📅 ${dateStr}</span>
+            <span>🕐 ${timeStr}</span>
+          </div>
+        `;
+
+        item.addEventListener('click', () => {
+          openReplay(entry, gameName);
+        });
+
+        historyList.appendChild(item);
+      });
+    }
+
+    function openReplay(entry, gameName) {
+      document.getElementById('replayTitle').textContent = `${gameName} - Replay`;
+      document.getElementById('replayBoard').textContent = 'Replay visualization coming soon\n\nYou can view the full replay in the mobile app.';
+      replayViewer.classList.add('active');
+      window.scrollTo(0, replayViewer.offsetTop - 100);
+    }
+
+    closeReplay.addEventListener('click', () => {
+      replayViewer.classList.remove('active');
+    });
+  </script>
+</body>
+</html>
