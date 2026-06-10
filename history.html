@@ -4,7 +4,7 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Replay Viewer — Classic Strategy Games</title>
-  <meta name="description" content="Open a shared Classic Strategy Games replay link to see the match details.">
+  <meta name="description" content="Open a shared Classic Strategy Games replay link to watch the match play out, move by move.">
   <link rel="stylesheet" href="styles.css">
   <style>
     .viewer { padding: 64px 0 84px; min-height: 70vh; }
@@ -18,7 +18,7 @@
     }
     .paste-box label { display: block; font-weight: 700; font-size: 14px; margin-bottom: 10px; }
     .paste-box textarea {
-      width: 100%; min-height: 88px; resize: vertical;
+      width: 100%; min-height: 84px; resize: vertical;
       border: 1px solid var(--border); border-radius: 10px;
       background: var(--bg-soft); color: var(--text);
       padding: 12px 14px; font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
@@ -27,35 +27,20 @@
     .paste-box textarea:focus { outline: none; border-color: var(--primary); }
     .paste-actions { display: flex; gap: 10px; margin-top: 12px; }
 
-    .replay-card {
-      max-width: 640px; margin: 0 auto;
-      background: var(--bg-card); border: 1px solid var(--border);
-      border-radius: 18px; overflow: hidden; box-shadow: var(--shadow);
+    /* The replay player (reused app ReplayScreen) mounts here. */
+    #replay-root {
       display: none;
+      max-width: 600px;
+      margin: 0 auto;
+      background: #1e1f2b;       /* matches the in-app board surface */
+      color: #f4f4f6;
+      border: 1px solid var(--border);
+      border-radius: 18px;
+      overflow: hidden;
+      box-shadow: var(--shadow);
     }
-    .replay-card.show { display: block; }
-    .replay-banner {
-      display: flex; align-items: center; gap: 18px;
-      padding: 28px; color: #fff;
-      background: linear-gradient(135deg, var(--g1, #3b6dff), var(--g2, #7048e8));
-    }
-    .replay-banner .glyph {
-      width: 64px; height: 64px; flex-shrink: 0;
-      border-radius: 16px; display: flex; align-items: center; justify-content: center;
-      font-size: 26px; background: rgba(255,255,255,0.18);
-    }
-    .replay-banner h2 { font-size: 24px; font-weight: 800; }
-    .replay-banner h2 small { display:block; font-size: 13px; font-weight:600; opacity:0.85; margin-top:2px; }
-    .replay-stats { display: flex; flex-wrap: wrap; }
-    .replay-stat { flex: 1 1 33%; min-width: 120px; padding: 22px; text-align: center; border-top: 1px solid var(--border); border-right: 1px solid var(--border); }
-    .replay-stat:last-child { border-right: none; }
-    .replay-stat .num { font-size: 28px; font-weight: 850; }
-    .replay-stat .lbl { font-size: 13px; color: var(--text-light); margin-top: 2px; }
-    .replay-foot { padding: 22px 28px; border-top: 1px solid var(--border); text-align: center; }
-    .replay-foot p { color: var(--text-light); font-size: 14px; margin-bottom: 14px; }
 
     .msg { max-width: 640px; margin: 0 auto; text-align: center; color: var(--text-light); padding: 24px; }
-    .msg.error { color: #e03131; font-weight: 600; }
   </style>
 </head>
 <body>
@@ -79,7 +64,7 @@
   <main class="viewer">
     <div class="container">
       <h1>Replay Viewer</h1>
-      <p class="viewer-sub">Open a replay link shared from the app, or paste a replay code below to see the match.</p>
+      <p class="viewer-sub">Open a replay link shared from the app, or paste a replay code below, to watch the match play out move by move.</p>
 
       <div class="paste-box">
         <label for="codeInput">Replay code</label>
@@ -90,25 +75,9 @@
         </div>
       </div>
 
-      <div class="replay-card" id="card">
-        <div class="replay-banner" id="banner">
-          <div class="glyph" id="glyph">♞</div>
-          <div>
-            <h2 id="gameName">Game<small id="gameAlt"></small></h2>
-          </div>
-        </div>
-        <div class="replay-stats">
-          <div class="replay-stat"><div class="num" id="statPlayers">2</div><div class="lbl">Players</div></div>
-          <div class="replay-stat"><div class="num" id="statMoves">0</div><div class="lbl">Moves played</div></div>
-          <div class="replay-stat"><div class="num">v1</div><div class="lbl">Replay format</div></div>
-        </div>
-        <div class="replay-foot">
-          <p>This is a shared match summary. Open the game in the Classic Strategy Games app to step through it move by move.</p>
-          <a href="index.html#download" class="btn btn-primary">Get the app</a>
-        </div>
-      </div>
+      <!-- Full move-by-move player (mounted by replay/replay.js) -->
+      <div id="replay-root"></div>
 
-      <div class="msg error" id="errorMsg" style="display:none;"></div>
       <div class="msg" id="emptyMsg">No replay loaded yet. Paste a code above, or open a shared link.</div>
     </div>
   </main>
@@ -126,149 +95,7 @@
     </div>
   </footer>
 
-  <script>
-    // ---- Replay codec (header decode, ported from the app) ----
-    // Append-only game table: a game's index is its 2-byte code in the blob.
-    const REPLAY_GAMES = ['tic-tac-toe','connect-four','gomoku','reversi','chinese-checkers',
-      'checkers','chess','xiangqi','nine-mens-morris','shogi','go','big-two'];
-    const GAME_NAMES = {
-      'tic-tac-toe': ['Tic-Tac-Toe', ''],
-      'connect-four': ['Four in a Row', ''],
-      'gomoku': ['Five in a Row', 'Gomoku'],
-      'reversi': ['Reversi', ''],
-      'chinese-checkers': ['Chinese Checkers', ''],
-      'checkers': ['Checkers', ''],
-      'chess': ['Chess', ''],
-      'xiangqi': ['Chinese Chess', 'Xiangqi'],
-      'nine-mens-morris': ["Nine Men's Morris", ''],
-      'shogi': ['Shogi', ''],
-      'go': ['Go', ''],
-      'big-two': ['Big Two', ''],
-    };
-    const GAME_GLYPH = {
-      'tic-tac-toe': ['✕○', '#5b8cff', '#3b5bdb'],
-      'connect-four': ['●●●', '#ff7a7a', '#e03131'],
-      'gomoku': ['●', '#3bc9db', '#1098ad'],
-      'reversi': ['◐', '#2bd4a0', '#0ca678'],
-      'chinese-checkers': ['✦', '#c08bff', '#7048e8'],
-      'checkers': ['⛂', '#ff922b', '#d9480f'],
-      'chess': ['♞', '#ffc14d', '#f08c00'],
-      'xiangqi': ['帥', '#fa5252', '#c92a2a'],
-      'nine-mens-morris': ['⊙', '#94d82d', '#5c940d'],
-      'shogi': ['歩', '#4dabf7', '#1971c2'],
-      'go': ['⚫', '#5b8cff', '#1864ab'],
-      'big-two': ['♠', '#f783ac', '#c2255c'],
-    };
-
-    // URL-safe base64 → bytes (bit accumulator; tolerant of missing padding).
-    const B64 = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789-_';
-    const LOOKUP = new Int16Array(128).fill(-1);
-    for (let i = 0; i < B64.length; i++) LOOKUP[B64.charCodeAt(i)] = i;
-    function fromBase64Url(text) {
-      const out = [];
-      let acc = 0, bits = 0;
-      for (let i = 0; i < text.length; i++) {
-        const c = text.charCodeAt(i);
-        const v = c < 128 ? LOOKUP[c] : -1;
-        if (v < 0) continue;
-        acc = (acc << 6) | v;
-        bits += 6;
-        if (bits >= 8) { bits -= 8; out.push((acc >> bits) & 0xff); }
-      }
-      return Uint8Array.from(out);
-    }
-
-    function readUint(bytes, at, width) {
-      let v = 0;
-      for (let i = 0; i < width; i++) v = v * 256 + (bytes[at + i] || 0);
-      return v;
-    }
-
-    // FNV-1a 32-bit, matching the app's integrity check.
-    function checksum(bytes, len) {
-      let h = 0x811c9dc5;
-      for (let i = 0; i < len; i++) { h ^= bytes[i] || 0; h = Math.imul(h, 0x01000193); }
-      return h >>> 0;
-    }
-
-    function decodeReplay(code) {
-      const bytes = fromBase64Url(code.trim());
-      if (bytes.length <= 18) throw new Error('That code is too short to be a replay.');
-      // Verify trailing 4-byte checksum.
-      const n = bytes.length - 4;
-      const stored = (((bytes[n] << 24) | (bytes[n + 1] << 16) | (bytes[n + 2] << 8) | bytes[n + 3]) >>> 0);
-      if (checksum(bytes, n) !== stored) throw new Error('This replay link is corrupted or incomplete.');
-      const version = readUint(bytes, 0, 2);
-      if (version !== 1) throw new Error('Unsupported replay version ' + version + '.');
-      const gameId = REPLAY_GAMES[readUint(bytes, 2, 2)];
-      if (!gameId) throw new Error('This replay names a game we don’t recognise.');
-      const playerCount = readUint(bytes, 4, 2);
-      const moveCount = readUint(bytes, 6, 4);
-      return { gameId, playerCount, moveCount };
-    }
-
-    // ---- UI ----
-    const card = document.getElementById('card');
-    const errorMsg = document.getElementById('errorMsg');
-    const emptyMsg = document.getElementById('emptyMsg');
-    const codeInput = document.getElementById('codeInput');
-
-    function showError(text) {
-      card.classList.remove('show');
-      emptyMsg.style.display = 'none';
-      errorMsg.textContent = text;
-      errorMsg.style.display = 'block';
-    }
-
-    function render(info) {
-      errorMsg.style.display = 'none';
-      emptyMsg.style.display = 'none';
-      const [name, alt] = GAME_NAMES[info.gameId] || [info.gameId, ''];
-      const [glyph, g1, g2] = GAME_GLYPH[info.gameId] || ['♞', '#3b6dff', '#7048e8'];
-      document.getElementById('gameName').childNodes[0].nodeValue = name;
-      document.getElementById('gameAlt').textContent = alt;
-      document.getElementById('glyph').textContent = glyph;
-      const banner = document.getElementById('banner');
-      banner.style.setProperty('--g1', g1);
-      banner.style.setProperty('--g2', g2);
-      document.getElementById('statPlayers').textContent = info.playerCount;
-      document.getElementById('statMoves').textContent = info.moveCount;
-      card.classList.add('show');
-      card.scrollIntoView({ behavior: 'smooth', block: 'center' });
-    }
-
-    function load(code) {
-      if (!code || !code.trim()) {
-        card.classList.remove('show');
-        errorMsg.style.display = 'none';
-        emptyMsg.style.display = 'block';
-        return;
-      }
-      try {
-        render(decodeReplay(code));
-      } catch (e) {
-        showError(e.message || 'Could not read that replay.');
-      }
-    }
-
-    document.getElementById('viewBtn').addEventListener('click', () => load(codeInput.value));
-    document.getElementById('clearBtn').addEventListener('click', () => {
-      codeInput.value = '';
-      load('');
-      if (location.hash) history.replaceState(null, '', location.pathname);
-    });
-
-    // Auto-load from a shared link: #replay=<code>
-    function readHash() {
-      const m = location.hash.match(/replay=([^&]+)/);
-      if (m) {
-        const code = decodeURIComponent(m[1]);
-        codeInput.value = code;
-        load(code);
-      }
-    }
-    window.addEventListener('hashchange', readHash);
-    readHash();
-  </script>
+  <!-- Reuses the app's ReplayScreen + every game board, bundled from source. -->
+  <script type="module" src="replay/replay.js"></script>
 </body>
 </html>
