@@ -63,22 +63,26 @@
 
   <main class="viewer">
     <div class="container">
-      <h1>Replay Viewer</h1>
-      <p class="viewer-sub">Open a replay link shared from the app, or paste a replay code below, to watch the match play out move by move.</p>
+      <!-- Intro chrome — hidden while a replay is showing, restored by the
+           player's back (←) button. -->
+      <div id="intro">
+        <h1>Replay Viewer</h1>
+        <p class="viewer-sub">Open a replay link shared from the app, or paste a replay code below, to watch the match play out move by move.</p>
 
-      <div class="paste-box">
-        <label for="codeInput">Replay code</label>
-        <textarea id="codeInput" placeholder="Paste a replay code shared from Classic Strategy Games…" spellcheck="false"></textarea>
-        <div class="paste-actions">
-          <button class="btn btn-primary" id="viewBtn">View replay</button>
-          <button class="btn btn-secondary" id="clearBtn">Clear</button>
+        <div class="paste-box">
+          <label for="codeInput">Replay code</label>
+          <textarea id="codeInput" placeholder="Paste a replay code shared from Classic Strategy Games…" spellcheck="false"></textarea>
+          <div class="paste-actions">
+            <button class="btn btn-primary" id="viewBtn">View replay</button>
+            <button class="btn btn-secondary" id="clearBtn">Clear</button>
+          </div>
         </div>
+
+        <div class="msg" id="emptyMsg">No replay loaded yet. Paste a code above, or open a shared link.</div>
       </div>
 
       <!-- Full move-by-move player (mounted by replay/replay.js) -->
       <div id="replay-root"></div>
-
-      <div class="msg" id="emptyMsg">No replay loaded yet. Paste a code above, or open a shared link.</div>
     </div>
   </main>
 

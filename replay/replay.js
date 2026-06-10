@@ -15440,7 +15440,7 @@ function cn(a) {
   return document.getElementById(a);
 }
 function Dm(a) {
-  const u = cn("emptyMsg");
+  const u = cn("intro");
   u && (u.style.display = a ? "block" : "none");
 }
 function ks() {
@@ -15456,7 +15456,7 @@ function Rm(a) {
     ks();
     return;
   }
-  u.style.display = "block", Dm(!1), Ha || (Ha = Qb.createRoot(u)), Ha.render(/* @__PURE__ */ z.jsx(Lb, { encoded: c, onExit: ks })), u.scrollIntoView?.({ behavior: "smooth", block: "center" });
+  Dm(!1), u.style.display = "block", Ha || (Ha = Qb.createRoot(u)), Ha.render(/* @__PURE__ */ z.jsx(Lb, { encoded: c, onExit: ks })), window.scrollTo({ top: 0, behavior: "auto" });
 }
 function jm() {
   const a = location.hash.match(/replay=([^&]+)/);
